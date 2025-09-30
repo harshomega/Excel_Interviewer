@@ -5,13 +5,25 @@ from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 import json
 
-# Load bootstrapped questions
+# Load and validate bootstrapped questions
+questions = []
 try:
     with open('question.json', 'r') as f:
-        questions = json.load(f)
+        data = json.load(f)
+        if isinstance(data, list):
+            questions = data
+        else:
+            questions = data.get('questions', [])
+        # Validate each question object
+        for q in questions:
+            if not all(key in q for key in ['question', 'expected', 'rubric']):
+                st.error("Invalid question format in questions.json. Missing 'question', 'expected', or 'rubric'.")
+                questions = []
+                break
 except FileNotFoundError:
-    questions = []
     st.error("questions.json not found. Please generate it using Generate.py.")
+except json.JSONDecodeError:
+    st.error("questions.json contains invalid JSON. Please regenerate it.")
 
 # Access the API key from secrets
 llm = ChatOpenAI(model="gpt-4o", api_key=st.secrets["OPENAI_API_KEY"])
@@ -60,8 +72,9 @@ if st.button("Submit"):
             memory.save_context({"input": next_q}, {"output": user_input})
 
             # Evaluate previous answer if not first
-            if user_input:
-                eval_result = eval_chain.invoke({"answer": user_input, "expected": q['expected'], "rubric": q['rubric']}).content
+            if user_input and st.session_state.question_index > 0:
+                prev_q = questions[st.session_state.question_index - 1]
+                eval_result = eval_chain.invoke({"answer": user_input, "expected": prev_q['expected'], "rubric": prev_q['rubric']}).content
                 try:
                     score_part = eval_result.split("Score:")[1].strip()
                     score = int(''.join(filter(str.isdigit, score_part.split()[0])))
@@ -69,7 +82,7 @@ if st.button("Submit"):
                 except (IndexError, ValueError) as e:
                     st.error(f"Error parsing score: {e}. Defaulting to 0.")
                     st.session_state.scores.append(0)
-                st.session_state.history.append({"q": q['question'], "a": user_input, "feedback": eval_result})
+                st.session_state.history.append({"q": prev_q['question'], "a": user_input, "feedback": eval_result})
                 st.write(f"Feedback: {eval_result}")
 
             st.session_state.question_index += 1
