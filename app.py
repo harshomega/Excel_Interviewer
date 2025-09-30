@@ -6,7 +6,7 @@ from langchain.memory import ConversationBufferMemory
 import json
 
 # Load bootstrapped questions
-with open('questions.json', 'r') as f:
+with open('question.json', 'r') as f:
     questions = json.load(f)
 
 
