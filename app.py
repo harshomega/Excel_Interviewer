@@ -6,9 +6,12 @@ from langchain.memory import ConversationBufferMemory
 import json
 
 # Load bootstrapped questions
-with open('question.json', 'r') as f:
-    questions = json.load(f)
-
+try:
+    with open('questions.json', 'r') as f:
+        questions = json.load(f)
+except FileNotFoundError:
+    questions = []
+    st.error("questions.json not found. Please generate it using Generate.py.")
 
 # Access the API key from secrets
 llm = ChatOpenAI(model="gpt-4o", api_key=st.secrets["OPENAI_API_KEY"])
@@ -59,8 +62,13 @@ if st.button("Submit"):
             # Evaluate previous answer if not first
             if user_input:
                 eval_result = eval_chain.invoke({"answer": user_input, "expected": q['expected'], "rubric": q['rubric']}).content
-                score = int(eval_result.split("Score:")[1].strip()[0])  # Parse score
-                st.session_state.scores.append(score)
+                try:
+                    score_part = eval_result.split("Score:")[1].strip()
+                    score = int(''.join(filter(str.isdigit, score_part.split()[0])))
+                    st.session_state.scores.append(score)
+                except (IndexError, ValueError) as e:
+                    st.error(f"Error parsing score: {e}. Defaulting to 0.")
+                    st.session_state.scores.append(0)
                 st.session_state.history.append({"q": q['question'], "a": user_input, "feedback": eval_result})
                 st.write(f"Feedback: {eval_result}")
 
@@ -71,5 +79,5 @@ if st.button("Submit"):
     if st.session_state.stage == 'summary':
         history = "\n".join([f"Q: {h['q']}\nA: {h['a']}\nFeedback: {h['feedback']}" for h in st.session_state.history])
         summary = summary_chain.invoke({"history": history}).content
-        overall_score = sum(st.session_state.scores) / len(st.session_state.scores)
+        overall_score = sum(st.session_state.scores) / len(st.session_state.scores) if st.session_state.scores else 0
         st.write(f"Interview Complete!\nOverall Score: {overall_score}/5\n{summary}")
