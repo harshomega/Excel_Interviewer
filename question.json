@@ -1,0 +1,52 @@
+[
+  {
+    "question": "What is VLOOKUP, and how do you use it in Excel?",
+    "expected": "VLOOKUP is a function to search for a value in the first column of a range and return a value in the same row from another column. Syntax: =VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup]). Example: =VLOOKUP(A1, B1:D10, 2, FALSE) searches for A1 in B1:B10 and returns the value from the second column.",
+    "rubric": "Score 1-5: 1=No understanding, 3=Explains concept but no example, 5=Full syntax and example with accuracy."
+  },
+  {
+    "question": "How do you create a Pivot Table in Excel?",
+    "expected": "Select your data range, go to Insert > PivotTable, choose where to place it (new or existing sheet), then drag fields to Rows, Columns, Values, or Filters areas to summarize data. Ensure data has headers.",
+    "rubric": "Score 1-5: 1=No idea, 3=Basic steps, 5=Detailed steps with data preparation."
+  },
+  {
+    "question": "What is the purpose of the IF function, and can you provide an example?",
+    "expected": "The IF function checks a condition and returns one value if true, another if false. Syntax: =IF(condition, value_if_true, value_if_false). Example: =IF(A1>10, 'Yes', 'No') returns 'Yes' if A1 exceeds 10, else 'No'.",
+    "rubric": "Score 1-5: 1=No understanding, 3=Concept only, 5=Syntax and working example."
+  },
+  {
+    "question": "How would you use Excel to perform a basic data analysis?",
+    "expected": "Use sorting and filtering to organize data, apply conditional formatting for trends, create charts (e.g., bar or line) via Insert > Chart, and use functions like AVERAGE, SUM, or COUNT to summarize. Pivot Tables can also analyze large datasets.",
+    "rubric": "Score 1-5: 1=No method, 3=One technique, 5=Multiple techniques with examples."
+  },
+  {
+    "question": "Write a simple VBA macro to automate clearing cell contents in a range.",
+    "expected": "Sub ClearRange()\n    Range('A1:A10').ClearContents\nEnd Sub\nThis macro clears contents in cells A1 to A10. Run it from the Developer tab > Macros.",
+    "rubric": "Score 1-5: 1=No code, 3=Partial code, 5=Complete working macro with explanation."
+  },
+  {
+    "question": "What is the difference between absolute and relative references in Excel?",
+    "expected": "Relative references (e.g., A1) adjust when copied, based on position. Absolute references (e.g., $A$1) stay fixed. Use F4 to toggle (e.g., $A1 or A$1 for mixed).",
+    "rubric": "Score 1-5: 1=No difference, 3=Basic difference, 5=Examples and toggle method."
+  },
+  {
+    "question": "How can you remove duplicates in Excel?",
+    "expected": "Select your data, go to Data > Remove Duplicates, choose columns to check, and confirm. This deletes duplicate rows based on selected criteria.",
+    "rubric": "Score 1-5: 1=No idea, 3=General method, 5=Step-by-step with column selection."
+  },
+  {
+    "question": "What is the INDEX-MATCH combination, and why might it be better than VLOOKUP?",
+    "expected": "INDEX returns a value from a range using a row/column number, MATCH finds the position. Syntax: =INDEX(range, MATCH(lookup_value, lookup_range, 0)). Better than VLOOKUP as it handles left lookups and is more flexible with column order.",
+    "rubric": "Score 1-5: 1=No understanding, 3=Basic use, 5=Syntax and advantage explanation."
+  },
+  {
+    "question": "How do you use the CONCATENATE function or its alternative?",
+    "expected": "CONCATENATE joins text strings. Syntax: =CONCATENATE(text1, text2). Alternative: & operator (e.g., A1 & B1) or CONCAT/TEXTJOIN in newer versions. Example: =CONCATENATE(A1, \" \", B1) combines with a space.",
+    "rubric": "Score 1-5: 1=No idea, 3=One method, 5=Multiple methods with example."
+  },
+  {
+    "question": "Explain how to create a dynamic chart in Excel.",
+    "expected": "Use a Table (Insert > Table) for dynamic ranges, then create a chart from it. Or use OFFSET in a named range (e.g., =OFFSET(A1,0,0,COUNTA(A:A),1)) and base the chart on that range.",
+    "rubric": "Score 1-5: 1=No method, 3=Basic Table, 5=OFFSET with formula."
+  }
+]
